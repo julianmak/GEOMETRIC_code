@@ -1,0 +1,2 @@
+export LD_LIBRARY_PATH="/home/jclmak/NEMO/gcc4.8_builds/custom_libs/lib:$LD_LIBRARY_PATH"
+export PATH="/home/jclmak/NEMO/gcc4.8_builds/custom_libs/bin:$PATH"

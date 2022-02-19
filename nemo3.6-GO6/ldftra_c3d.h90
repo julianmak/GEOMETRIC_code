@@ -1,0 +1,129 @@
+   !!----------------------------------------------------------------------
+   !!                        ***  ldftra_c3d.h90  ***
+   !!----------------------------------------------------------------------
+
+   !!----------------------------------------------------------------------
+   !! NEMO/OPA 3.3 , NEMO Consortium (2010)
+   !! $Id$
+   !! Software governed by the CeCILL licence     (NEMOGCM/NEMO_CeCILL.txt)
+   !!----------------------------------------------------------------------
+
+   SUBROUTINE ldf_tra_c3d( ld_print )
+      !!----------------------------------------------------------------------
+      !!                 ***  ROUTINE ldftra_c3d  ***
+      !!                
+      !! ** Purpose :
+      !!     initializations of non uniform horizontal eddy diffusivity coef.
+      !!
+      !! ** Method :
+      !!      3D eddy diffusivity coefficients ( longitude, latitude, depth )
+      !!
+      !!       biharmonic operator    : ahtt = defined at T-level
+      !!                                ahtu,ahtv,ahtw never used
+      !!
+      !!       harmonic operator (ahtt never used)
+      !!         iso-model level   : ahtu, ahtv defined at u-, v-points
+      !!         isopycnal         : ahtu, ahtv, ahtw defined at u-, v-, w-pts
+      !!         or geopotential
+      !!
+      !!       eddy induced velocity
+      !!         always harmonic   : aeiu, aeiv, aeiw defined at u-, v-, w-pts
+      !!----------------------------------------------------------------------
+      USE ioipsl
+      !
+      LOGICAL, INTENT (in) ::   ld_print   ! If true, output arrays on numout
+      !!----------------------------------------------------------------------
+
+      IF( lk_traldf_eiv ) THEN
+         IF ( lk_ldfeke ) THEN
+            IF(lwp) WRITE(numout,*)
+            IF(lwp) WRITE(numout,*) ' ldf_eke : the GEOMETRIC parameterisation scheme'
+            IF(lwp) WRITE(numout,*) ' ~~~~~~~       ---------  '
+         ELSE
+            IF(lwp) WRITE(numout,*)
+            IF(lwp) WRITE(numout,*) ' ldf_tra_c3d : 3D eddy diffusivity and eddy induced velocity coefficients'
+            IF(lwp) WRITE(numout,*) ' ~~~~~~~~~~~   --  '
+            IF(lwp) WRITE(numout,*) '               Coefficients set to constant'
+         ENDIF
+      ELSE
+         IF(lwp) WRITE(numout,*)
+         IF(lwp) WRITE(numout,*) ' ldf_tra_c3d : 3D eddy diffusivity coefficient'
+         IF(lwp) WRITE(numout,*) ' ~~~~~~~~~~~   -- '
+         IF(lwp) WRITE(numout,*) '               Coefficients set to constant'
+      ENDIF
+
+
+      ! biharmonic operator   (T-point)
+      ! -------------------
+
+      ahtt(:,:,:) = aht0              ! set ahtt at T-point (here no space variation)
+
+      CALL lbc_lnk( ahtt, 'T', 1. )   ! Lateral boundary conditions on ( ahtt )
+
+      IF(lwp .AND. ld_print ) THEN                    ! Control print
+         WRITE(numout,*)
+         WRITE(numout,*) 'inildf: ahtt at k = 1'
+         CALL prihre( ahtt(:,:,1), jpi, jpj, 1, jpi, 1,   &
+            &                                1, jpj, 1, 1.e-3, numout )
+      ENDIF
+
+
+      ! harmonic operator   (U-, V-, W-points)
+      ! ----------------- 
+
+      ahtu(:,:,:) = aht0              ! set ahtu = ahtv at u- and v-points,
+      ahtv(:,:,:) = aht0              ! and ahtw at w-point
+      ahtw(:,:,:) = aht0              ! (here example: no space variation)
+      
+      CALL lbc_lnk( ahtu, 'U', 1. )   ! Lateral boundary conditions
+      CALL lbc_lnk( ahtv, 'V', 1. )
+      CALL lbc_lnk( ahtw, 'W', 1. )
+
+      IF(lwp .AND. ld_print ) THEN                    ! Control print
+         WRITE(numout,*)
+         WRITE(numout,*) 'inildf: ahtu at k = 1'
+         CALL prihre( ahtu(:,:,1), jpi, jpj, 1, jpi, 1,   &
+            &                                1, jpj, 1, 1.e-3, numout )
+         WRITE(numout,*)
+         WRITE(numout,*) 'inildf: ahtv at k = 1'
+         CALL prihre( ahtv(:,:,1), jpi, jpj, 1, jpi, 1,   &
+            &                                1, jpj, 1, 1.e-3, numout )
+         WRITE(numout,*)
+         WRITE(numout,*) 'inildf: ahtw at k = 1'
+         CALL prihre( ahtw(:,:,1), jpi, jpj, 1, jpi, 1,   &
+            &                                1, jpj, 1, 1.e-3, numout )
+      ENDIF
+
+# if defined key_traldf_eiv
+      aeiu(:,:,:) = aeiv0            ! set aeiu = aeiv at u- and v-points,
+      aeiv(:,:,:) = aeiv0            ! and aeiw at w-point
+      aeiw(:,:,:) = aeiv0            ! (here example: no space variation)
+
+      IF( cp_cfg == "orca" .AND. jp_cfg == 4 ) THEN
+         !                                 ! Cancel eiv in Gibraltar strait
+         aeiu( mi0(68):mi1(71) , mj0(50):mj1(53) , : ) = 0.e0
+         aeiv( mi0(68):mi1(71) , mj0(50):mj1(53) , : ) = 0.e0
+         aeiw( mi0(68):mi1(71) , mj0(50):mj1(53) , : ) = 0.e0
+         !                                 ! Cancel eiv in Mediterrannean sea
+         aeiu( mi0(70):mi1(90) , mj0(49):mj1(56) , : ) = 0.e0
+         aeiv( mi0(70):mi1(90) , mj0(49):mj1(56) , : ) = 0.e0
+         aeiw( mi0(70):mi1(90) , mj0(49):mj1(56) , : ) = 0.e0
+      ENDIF
+
+      CALL lbc_lnk( aeiu, 'U', 1. )   ! Lateral boundary conditions 
+      CALL lbc_lnk( aeiv, 'V', 1. )
+      CALL lbc_lnk( aeiw, 'W', 1. )
+      IF(lwp .AND. ld_print ) THEN
+         WRITE(numout,*)
+         WRITE(numout,*) 'inildf: aeiu at k = 1'
+         CALL prihre(aeiu(:,:,1),jpi,jpj,1,jpi,1,1,jpj,1,1.e-3,numout)
+         WRITE(numout,*)
+         WRITE(numout,*) 'inildf: aeiv at k = 1'
+         CALL prihre(aeiv(:,:,1),jpi,jpj,1,jpi,1,1,jpj,1,1.e-3,numout)
+         WRITE(numout,*)
+         WRITE(numout,*) 'inildf: aeiw at k = 1'
+         CALL prihre(aeiw(:,:,1),jpi,jpj,1,jpi,1,1,jpj,1,1.e-3,numout)
+      ENDIF
+
+# endif
+   END SUBROUTINE ldf_tra_c3d

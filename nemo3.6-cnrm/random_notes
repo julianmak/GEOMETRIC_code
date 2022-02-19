@@ -1,0 +1,39 @@
+* the namelist_ref doesn't agree, so using the CNRM one
+  - there is a "ln_crs" flag in there which isn't even read by in namdom (doesn't belong?), removed it
+* this version of nemo for whatever reason has xios one_file embedded into iom.F90
+  - overwrite it in MY_SRC
+* fucking goddamn xios field definitions again...
+  - brute force overwrite
+  - domain_ref "scalarglob" not defined, just going to kill it for now
+    - replaced it with "grid_T_2D" because cannot be bothered
+    - killed off all the pisces entries (seeing as it is not compiled here) and it's ok
+
+  ! this is not clean, please don't use this one as is, but have one that works with your
+    configuration and then add in the GEOMETRIC field definitions
+
+* copying over the set of cpp and MY_SRC files that works in GO6
+  - I think (?) its the following that is needed
+
+      key_traldf_eiv key_traldf_eke key_traldf_c3d
+
+    and the others are mostly there already. The original cpp file is there (taken from ORCA2_LIM3 for testing purposes)
+  - didn't need the oce.F90 bit so got rid of that
+  - nemogcm.F90, step.F90 and step_oce.F90 incompatible between CNRM and GO6 version, just added them in manually (it's only three lines)
+  - recompiled but failed because field undefined, to be expected
+    - add into "nemo_fields.xml" (T grid and W grid entry, search for "GEOMETRIC")
+  - other EIV related things do not exist, add them in
+  - at least runs though geometric is not turned on
+    - is reading all the defaults and everything is turned off as expected
+* turn geometric on
+  - add in entries into a "namldf_eke" under "namtra_ldf"
+  - will run
+  - will output diagnostics
+  - will restart
+
+? TODO: testing in some configuration
+  - OMIP protocol maybe?7
+
+! swapped out the full eigenvalue solver for computing Rossby wave advection velocity with the approximation 
+  in Nurser & Bacon (in line with the more recent code)
+  -- removed code to do with Thomas algorithm, power iteration solver for max eigenvalue, and removed
+     the reads for now redundnat variable "nn_wav_cal"

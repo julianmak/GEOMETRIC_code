@@ -1,0 +1,178 @@
+# ====================
+# | Model parameters |
+# ====================
+#-------------------------------------------------------------------------------
+# Continuous equation parameters
+
+ &PARM01
+ tRef=2.5,
+ sRef=35.,
+# Set viscosities.
+ viscAr=1.E-4,
+ viscAhgrid=0.,
+ viscA4grid=0.,
+ viscAh=0.,
+ viscA4=0.,
+ viscC2Leith=2.,
+ viscC4Leith=2.,
+ viscC2LeithD=2.,
+ viscC4LeithD=2.,
+ useFullLeith=.TRUE.,
+# Set temperature and salinity dissipation.
+ diffKhT=0.,
+ diffK4T=1.E9,
+ diffKrT=1.E-5,
+ diffKhS=0.,
+ diffK4S=0.,
+ diffKrS=0.,
+# Free surface options.
+ rigidLid=.FALSE.,
+ implicitFreeSurface=.TRUE.,
+# Active tracer options (turn off salinity).
+ saltAdvection=.FALSE.,
+ saltForcing=.FALSE.,
+ saltStepping=.FALSE.,
+ tempAdvection=.TRUE.,
+ tempForcing=.TRUE.,
+ tempStepping=.TRUE.,
+# Select equation of state options.
+ rhonil=1035.,
+ rhoConstFresh=1000.,
+ rhoConst=1035.,
+ buoyancyRelation='OCEANIC',
+ eosType = 'LINEAR',
+ tAlpha=2.E-4,
+ sBeta=0.E-4,
+# Coriolis parameters.
+ f0=-1.11E-4,
+ beta=1.47E-11,
+# Momentum options.
+ nonHydrostatic=.FALSE.,
+ momAdvection=.TRUE.,
+ implicitViscosity=.TRUE.,
+ implicitDiffusion=.TRUE.,
+ exactConserv=.TRUE.,
+ useRealFreshWaterFlux=.TRUE.,
+ linFSConserveTr=.TRUE.,
+ allowFreezing=.TRUE.,
+# Turn on partial cells
+ hFacMin=0.1,
+ hFacMindr=10.,
+# set precision of data files
+ readBinaryPrec=64,
+# Set a different advection scheme for T & S.
+ tempAdvScheme=7,
+ saltAdvScheme=7,
+ staggerTimeStep=.TRUE.,
+ vectorInvariantMomentum=.TRUE.,
+ highOrderVorticity=.TRUE.,
+ useJamartWetPoints=.TRUE.,
+ useJamartMomAdv=.TRUE.,
+# Set lateral boundary conditions.
+ no_slip_sides=.TRUE.,
+ no_slip_bottom=.TRUE.,
+ bottomDragLinear=1.1E-3,
+# Turn on implicit vertical diffusion for convection.
+ ivdc_kappa=10.,
+ useSingleCpuIO=.TRUE.,
+ &
+
+#-------------------------------------------------------------------------------
+# Elliptic solver parameters
+
+ &PARM02
+ cg2dMaxIters=500,
+ cg2dTargetResidual=1.E-7,
+ &
+
+#-------------------------------------------------------------------------------
+# Time stepping parameters
+
+ &PARM03
+# Start from the beginning of time.
+# nIter0= 1555200,
+# nIter0= 0,
+ nIter0= 100,
+# 10 yr run (1 yr = 51840 dt)
+# nTimeSteps =   518401,
+ nTimeSteps = 100,
+# Turn off convective adjustment.
+ cAdjFreq=0.,
+
+#-------------------------------------------------------------------------------
+# 10km grid spacing resolution timestepping.
+ deltaT=600.,
+
+#-------------------------------------------------------------------------------
+
+ abEps = 0.1,
+
+#-------------------------------------------------------------------------------
+# Permanent checkpointing.
+
+# Every 10 years.
+# pChkptFreq= 311040000., 
+ pChkptFreq= 60000.,
+
+#-------------------------------------------------------------------------------
+# Dump file frequency.
+
+# Every 10 years.
+ dumpFreq= 311040000.,
+
+#-------------------------------------------------------------------------------
+# Averaging frequency.
+
+#  Every 10 years.
+# taveFreq=   311040000.,
+
+#-------------------------------------------------------------------------------
+# Monitor statistics frequency.
+
+# Every 10 days.
+# monitorFreq= 864000.,
+ monitorFreq= 86400.,
+
+#-------------------------------------------------------------------------------
+# Forcing timescales - turn on SST restoring.
+
+ tauThetaClimRelax=864000.,
+# tauSaltClimRelax =0.,
+ periodicExternalForcing=.FALSE.,
+
+#-------------------------------------------------------------------------------
+# End of &PARM03.
+ &
+
+#-------------------------------------------------------------------------------
+# Gridding parameters
+
+ &PARM04
+ usingCartesianGrid=.TRUE.,
+ usingSphericalPolarGrid=.FALSE.,
+ delR=10.0000, 11.3752, 12.9394, 14.7188, 16.7429, 19.0453, 21.6643, 24.6435,
+      28.0323, 31.8872, 36.2722, 41.2602, 46.9342, 53.3883, 60.7301, 69.0814,
+      78.5812, 89.3874, 101.6795, 115.6621, 131.5674, 149.6600, 170.2406,
+      193.6514, 220.8552, 250.0000, 250.0000, 250.0000, 250.0000, 250.0000
+ xgOrigin=-2000.E3,
+ ygOrigin=-1000.E3,
+ dYspacing=100.E3,
+ dXspacing=100.E3,
+ &
+
+#-------------------------------------------------------------------------------
+# Input datasets
+
+ &PARM05
+ bathyFile=      'bathy.bin',
+ hydrogThetaFile='noisyt.bin',
+ hydrogSaltFile= '',
+ zonalWindFile=  'tau.bin',
+ thetaClimFile=  'sst.bin',
+ saltClimFile=   '',
+ surfQFile=      '',
+ diffKrFile=     'diffkr.bin',
+ the_run_name=   'Channel Model',
+ &
+
+#-------------------------------------------------------------------------------

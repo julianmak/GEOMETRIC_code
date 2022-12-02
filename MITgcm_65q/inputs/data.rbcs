@@ -1,0 +1,13 @@
+# RBCS package parameters:
+ &RBCS_PARM01
+  rbcsForcingPeriod=0.,
+  rbcsForcingCycle=0.,
+  tauRelaxT=864000.,
+  relaxMaskFile(1)='mask.bin',
+  relaxTFile='t.bin',
+  useRBCtemp=.TRUE.,
+ &
+
+# RBCS for pTracers (read this namelist only when ptracers pkg is compiled)
+ &RBCS_PARM02
+ &

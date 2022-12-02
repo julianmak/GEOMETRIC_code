@@ -1,0 +1,11 @@
+# Packages (lines beginning "#" are comments)
+ &PACKAGES
+ useMNC=.TRUE.,
+ useDiagnostics=.TRUE.,
+ useRBCS=.FALSE.,
+ useGMRedi=.TRUE.,
+#-------------------------------------------------------------------------------
+# Set to .TRUE. to use RPA's layer packages for residual MOC.
+ useLayers=.FALSE.,
+#-------------------------------------------------------------------------------
+ &

@@ -1,0 +1,125 @@
+Wednesday, November 30, 2022 PM04:14:18 HKT
+run: ./testreport -of ../../experiments/linux_amd64_gfortran_custom
+on : Linux slowking-hkust 5.15.0-53-generic #59~20.04.1-Ubuntu SMP Thu Oct 20 15:10:22 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+
+  OPTFILE=/home/jclmak/MITgcm/experiments/linux_amd64_gfortran_custom
+
+default 10  ----T-----  ----S-----  ----U-----  ----V-----  --PTR 01--  --PTR 02--  --PTR 03--  --PTR 04--  --PTR 05--
+G D M    c        m  s        m  s        m  s        m  s        m  s        m  s        m  s        m  s        m  s
+e p a R  g  m  m  e  .  m  m  e  .  m  m  e  .  m  m  e  .  m  m  e  .  m  m  e  .  m  m  e  .  m  m  e  .  m  m  e  .
+n n k u  2  i  a  a  d  i  a  a  d  i  a  a  d  i  a  a  d  i  a  a  d  i  a  a  d  i  a  a  d  i  a  a  d  i  a  a  d
+2 d e n  d  n  x  n  .  n  x  n  .  n  x  n  .  n  x  n  .  n  x  n  .  n  x  n  .  n  x  n  .  n  x  n  .  n  x  n  .
+
+Y Y Y Y 16 16 16 16 16 16 16 16 16 11 16 16 14 16 14 16 16 16 16 16 22 14 14>14<22 pass  1D_ocean_ice_column
+Y Y Y Y>14<16 16 16 16 22 22 22 22 22 22 22 22 13  4 13 13 pass  adjustment.128x64x1
+Y Y Y Y>14<16 16 16 16 22 22 22 22 16 16 13 16 16 16  4 16 pass  adjustment.cs-32x32x1
+Y Y Y Y>14<16 16 16  0 22 22 22 22 16 16  0 14 16 16  0 16 pass  adjustment.cs-32x32x1.nlfs
+Y Y Y Y -- 16 16 16>16<16 16 16 16 16 16 16 16 16 16 16 16 pass  advect_cs
+Y Y Y Y -- 14 14 16>16<16 16 16 16 16 16 16 22 16 16 16 22 pass  advect_xy
+Y Y Y Y -- 16 16 16>16<16 16 16 16 16 16 16 22 16 16 16 22 pass  advect_xy.ab3_c4
+Y Y Y Y -- 16 16 16>16<16 16 16 16 16 16 16 16 22 22 22 22 pass  advect_xz
+Y Y Y Y -- 16 16 16>16<14 14 16 14 16 16 16 16 22 22 22 22 pass  advect_xz.nlfs
+Y Y Y Y -- 13 16 16>16<12 16 16 16 16 16 16 16 22 22 22 22 pass  advect_xz.pqm
+Y Y Y Y>14<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  aim.5l_cs
+Y Y Y Y>16<16 16 16 14 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  aim.5l_cs.thSI
+Y Y Y Y>14<16 16 13 14 16 16 13 13 16 16 13 13 16 16 13 14 pass  aim.5l_Equatorial_Channel
+Y Y Y Y>14<16 16 13 13 16 16 13 13 16 16 13 13 16 16 13 13 pass  aim.5l_LatLon
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  cfc_example
+Y Y Y Y>14<16 16 16 16 16 16 16 16 16 16 14 16 16 16 13 16 pass  cheapAML_box
+Y Y Y Y>14<16 16 16 12 22 22 22 22 13 16 12 16 13 14 12 16 pass  deep_anelastic
+Y Y Y Y>14<16 16 16 16 16 16 16 16 16 16 16 16 16 13 14 16 pass  dome
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  exp2
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 14  1 16 pass  exp2.rigidLid
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  exp4
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  exp4.nlfs
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  exp4.stevens
+Y Y Y Y> 9<13 11 10 10 16 13  8  9 12 12  9 11 14 12  9 10 FAIL  fizhi-cs-32x32x40
+Y Y Y Y>12<16 16 14 13 16 13 16 16 16 16 16 14 16 16 16 14 pass  fizhi-cs-aqualev20
+Y Y Y Y>16<16 16 16 16 22 22 22 22 16 16 16 16 16 16 16 16 pass  fizhi-gridalt-hs
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  flt_example
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  front_relax
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  front_relax.bvp
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  front_relax.in_p
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  front_relax.mxl
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  front_relax.top
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  global_ocean.90x40x15
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  global_ocean.90x40x15.dwnslp
+Y Y Y Y>12<16 16 16 16 16 16 16 16 14 16 12 16 13 14 13 16 -- -- -- -- pass  global_ocean.90x40x15.idemix
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  global_ocean.cs32x15
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  global_ocean.cs32x15.icedyn
+Y Y Y Y> 9<16 13 14 14 12 16 16 14 11 11 11 12 12 11 11 12 22 11 12 13 22 11 13 13 FAIL  global_ocean.cs32x15.in_p
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 22 16 16 16 22 16 16 16 pass  global_ocean.cs32x15.seaice
+Y Y Y Y>11<16 16 16 16 16 16 16 16 13 13 14 16 13 13 14 13 16 16 16 16 16 16 pass  global_ocean.cs32x15.thsice
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  global_ocean.cs32x15.viscA4
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  global_ocean_ebm
+Y Y Y Y 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  global_oce_biogeo_bling
+Y Y Y Y>14<13 16 16 16 16 16 16 13 13 13 14 14 13 13 13 16 pass  global_with_exf
+Y Y Y Y>14<13 16 16 16 16 16 16 16 16 16 14 16 13 16 13 16 pass  global_with_exf.yearly
+Y Y Y Y> 6<16 16 16 16 16 16 16 16 22 22 22 22 22 22 22 22 FAIL  halfpipe_streamice
+Y Y Y Y>15<16 16 16 16 22 22 22 22 13 16 16 16 16 16  9 16 pass  hs94.128x64x5
+Y Y Y Y>14<16 16 16 16 22 22 22 22 16 13 16 16 16 16  0 16 pass  hs94.1x64x5
+Y Y Y Y>14<16 16 16 16 22 22 22 22 16 16 16 16 13 13 16 16 pass  hs94.cs-32x32x5
+Y Y Y Y>16<16 16 16 16 22 22 22 22 16 16 16 16 16 16 16 16 pass  hs94.cs-32x32x5.impIGW
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  ideal_2D_oce
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 22 22 22 22 pass  internal_wave
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 22 22 22 22 pass  internal_wave.kl10
+Y Y Y Y>14<16 16 16 16 16 16 16 22 14 14  0 16 14 13  0 16 pass  inverted_barometer
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  isomip
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  isomip.htd
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  isomip.icefront
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  isomip.obcs
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 22 16 16 16 22 16 16 16 pass  lab_sea
+Y Y Y Y>13<16 16 16 16 16 16 16 16 16 16 14 16 16 16 13 16 22 16 16 16 22 16 16 16 pass  lab_sea.fd
+Y Y Y Y> 4< 9 11 10  9 16 14 11  9  7  8  4  5  8  8  4  5 22  6  8  8 22  7  7  7 FAIL  lab_sea.hb87
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 22 16 16 16 22 16 16 16 pass  lab_sea.salt_plume
+Y Y Y Y>16<16 16 16 22 16 16 16 22 16 16 16 16 16 16 16 16 pass  matrix_example
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  MLAdjust
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  MLAdjust.A4FlxF
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  MLAdjust.AhFlxF
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  MLAdjust.AhStTn
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  MLAdjust.AhVrDv
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  MLAdjust.QGLeith
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  MLAdjust.QGLthGM
+Y Y Y Y>13<16 16 16 16 16 16 16 16 16 16 14 16 16 16 13 16 pass  natl_box
+Y Y Y Y 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16>16<pass  natl_box.longstep
+Y Y Y Y -- 16 16 16 13 16 13 16 16 13 13 13>13<13 13 12 13 pass  offline_exf_seaice
+Y Y Y Y -- 14 16 16 14 14 14 16 13 12 13 13>13<13 13 13 13 pass  offline_exf_seaice.dyn_ellnnfr
+Y Y Y Y -- 13 14 14 12 16 12 16 16 11 13 13>12<12 12 11 12 pass  offline_exf_seaice.dyn_jfnk
+Y Y Y Y -- 13 16 14 14 13 14 16 13 12 13 13>12<13 13 12 13 pass  offline_exf_seaice.dyn_lsr
+Y Y Y Y -- 16 16 14 13 14 14 16 13 12 13 13>13<13 13 12 13 pass  offline_exf_seaice.dyn_mce
+Y Y Y Y -- 16 16 16 16 16 16 16 16 16 16 16>14<13 16 13 16 pass  offline_exf_seaice.dyn_paralens
+Y Y Y Y -- 16 16 16 16 16 16 16 16 13 13 13>13<13 13 12 13 pass  offline_exf_seaice.dyn_teardrop
+Y Y Y Y -- 16 16 16 16 16 16 16 22 22 16 16 16 22 16 16>16<pass  offline_exf_seaice.thermo
+Y Y Y Y -- 16 16 16 16 16 16 16 22 16 16 16 16 16 16 16>16<pass  offline_exf_seaice.thsice
+Y Y Y Y -- 16 16 16 16 16 16 16 16 12 14 13>12<13 16 12 13 pass  seaice_itd
+Y Y Y Y -- 16 16 16 16 16 16 16 16 12 14 13>12<16 16 13 13 pass  seaice_itd.lipscomb07
+Y Y Y Y -- 16 12  8  8 16 11 12  9  7  6  8> 7< 6  9  7  7 FAIL  seaice_itd.thermo
+Y Y Y Y>14<16 16 16 16 16 16 16 16 16 16 13 16 16 16 14 16 22 16 16 16 22 16 16 16 pass  seaice_obcs
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 22 16 16 16 22 16 16 16 pass  seaice_obcs.seaiceSponge
+Y Y Y Y>16<16 16 16 16 16 16 16 16 13 16 16 16 13 16 16 16 22 16 16 16 22 16 16 16 pass  seaice_obcs.tides
+Y Y Y Y>10<16 16 14 16 16 16 14 13 14 14 13 16 16 16 11 12 pass  shelfice_2d_remesh
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 22 22 22 22 pass  short_surf_wave
+Y Y Y Y 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  so_box_biogeo
+Y Y Y Y 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  so_box_biogeo.saphe
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  solid-body.cs-32x32x1
+Y Y Y Y 16 16 16 16 22 22 22 22 22 16 16 16 16 16 16 16 16 22 16 16>16<pass  tutorial_advection_in_gyre
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  tutorial_baroclinic_gyre
+Y Y Y Y>16<16 16 16 22 16 16 16 22 16 16 16 16 16 16 16 16 pass  tutorial_barotropic_gyre
+Y Y Y Y -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 16 16 16>16<16 16 16 16 pass  tutorial_cfc_offline
+Y Y Y Y>16<16 16 16 16 16 16 16 22 16 16 16 16 16 16 16 16 pass  tutorial_deep_convection
+Y Y Y Y>16<16 16 16 16 16 16 16 22 16 16 16 16 16 16 16 16 pass  tutorial_deep_convection.smag3d
+Y Y Y Y 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  tutorial_global_oce_biogeo
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  tutorial_global_oce_in_p
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  tutorial_global_oce_latlon
+Y Y Y Y>14<16 16 16 16 22 22 22 22 16 14 16 16 16 16 16 16 pass  tutorial_held_suarez_cs
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 22 22 22 22 pass  tutorial_plume_on_slope
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  tutorial_reentrant_channel
+Y Y Y Y>16<16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 pass  tutorial_rotating_tank
+Y Y Y Y 22 16 16 16>16<16 16 16 16 16 16 16 16 16 16 16 16 pass  vermix
+Y Y Y Y 22 14 14 16>16<16 14 16 14 22 22 22 22 22 22 22 22 pass  vermix.dd
+Y Y Y Y 22 16 16 16>16<16 16 16 16 16 16 16 16 16 16 16 16 pass  vermix.ggl90
+Y Y Y Y 22 16 13 14>16<16 16 16  1 10 10 14 11 11  8 13 11 pass  vermix.my82
+Y Y Y Y 22 16 16 14>16<16 16 16  1 13 16 16 16 16 14 16 16 pass  vermix.opps
+Y Y Y Y 22 16 13 14>16<16 16 16  1 10 10 14 10 10  9 14 11 pass  vermix.pp81
+Start time:  Wednesday, November 30, 2022 PM04:14:18 HKT
+End time:    Wednesday, November 30, 2022 PM05:10:09 HKT

@@ -1,0 +1,115 @@
+Start time:  Wednesday, November 30, 2022 PM06:34:40 HKT
+run: ../tools/do_tst_2+2 -mpi
+ using output from:
+run: ./testreport -of ../../experiments/linux_amd64_mpi_custom -mpi
+on : Linux slowking-hkust 5.15.0-53-generic #59~20.04.1-Ubuntu SMP Thu Oct 20 15:10:22 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+
+  OPTFILE=/home/jclmak/MITgcm/experiments/linux_amd64_mpi_custom
+
+test 2+2=4 summary :
+
+P. Run  Result     experiment
+  1 2 3
+Y Y Y Y  pass   <- adjustment.128x64x1
+Y Y Y Y  pass   <- adjustment.cs-32x32x1
+N N N N FAIL (8) - adjustment.cs-32x32x1.nlfs
+Y Y Y Y  pass   <- advect_cs
+Y Y Y Y  pass   <- advect_xy
+Y Y Y Y  pass   <- advect_xy.ab3_c4
+Y Y Y Y  pass   <- advect_xz
+Y Y Y Y  pass   <- advect_xz.nlfs
+Y Y Y Y  pass   <- advect_xz.pqm
+Y Y Y Y  pass   <- aim.5l_cs
+Y Y Y Y  pass   <- aim.5l_cs.thSI
+Y Y Y Y  pass   <- aim.5l_Equatorial_Channel
+Y Y Y Y  pass   <- aim.5l_LatLon
+Y Y Y Y  pass   <- cfc_example
+Y Y Y Y  pass   <- cheapAML_box
+Y Y Y Y  pass   <- deep_anelastic
+Y Y Y Y  pass   <- dome
+Y Y Y Y  pass   <- exp2
+Y Y Y Y  pass   <- exp2.rigidLid
+Y Y Y Y  pass   <- exp4
+Y Y Y Y  pass   <- exp4.nlfs
+Y Y Y Y  pass   <- exp4.stevens
+Y Y Y Y  pass   <- fizhi-gridalt-hs
+Y Y Y Y  pass   <- flt_example
+Y Y Y Y  pass   <- front_relax
+Y Y Y Y  pass   <- front_relax.bvp
+Y Y Y Y  pass   <- front_relax.in_p
+Y Y Y Y  pass   <- front_relax.mxl
+Y Y Y Y  pass   <- front_relax.top
+Y Y Y Y  pass   <- global_ocean.90x40x15
+Y Y Y Y  pass   <- global_ocean.90x40x15.dwnslp
+Y Y Y Y  pass   <- global_ocean.90x40x15.idemix
+Y Y Y Y  pass   <- global_ocean.cs32x15
+Y Y Y Y  pass   <- global_ocean.cs32x15.icedyn
+Y Y Y Y  pass   <- global_ocean.cs32x15.in_p
+Y Y Y Y  pass   <- global_ocean.cs32x15.seaice
+Y Y Y Y  pass   <- global_ocean.cs32x15.thsice
+Y Y Y Y  pass   <- global_ocean.cs32x15.viscA4
+Y Y Y Y  pass   <- global_ocean_ebm
+Y Y Y Y  pass   <- global_oce_biogeo_bling
+Y Y Y Y  pass   <- global_with_exf
+Y Y Y Y  pass   <- global_with_exf.yearly
+Y Y Y Y  pass   <- halfpipe_streamice
+Y Y Y Y  pass   <- hs94.128x64x5
+Y Y Y Y  pass   <- hs94.1x64x5
+Y Y Y Y  pass   <- hs94.cs-32x32x5
+Y Y Y Y  pass   <- hs94.cs-32x32x5.impIGW
+Y Y Y Y  pass   <- ideal_2D_oce
+Y Y Y Y  pass   <- internal_wave
+Y Y Y Y  pass   <- internal_wave.kl10
+Y Y Y Y  pass   <- inverted_barometer
+Y Y Y Y  pass   <- isomip
+Y Y Y Y  pass   <- isomip.htd
+Y Y Y Y  pass   <- isomip.icefront
+Y Y Y Y  pass   <- isomip.obcs
+Y Y Y Y  pass   <- lab_sea
+Y Y Y Y  pass   <- lab_sea.fd
+Y Y Y Y  pass   <- lab_sea.hb87
+Y Y Y Y  pass   <- lab_sea.salt_plume
+Y Y Y Y  pass   <- matrix_example
+Y Y Y Y  pass   <- MLAdjust
+Y Y Y Y  pass   <- MLAdjust.A4FlxF
+Y Y Y Y  pass   <- MLAdjust.AhFlxF
+Y Y Y Y  pass   <- MLAdjust.AhStTn
+Y Y Y Y  pass   <- MLAdjust.AhVrDv
+Y Y Y Y  pass   <- MLAdjust.QGLeith
+Y Y Y Y  pass   <- MLAdjust.QGLthGM
+Y Y Y Y  pass   <- natl_box
+Y Y Y Y  pass   <- natl_box.longstep
+Y Y Y Y  pass   <- offline_exf_seaice
+Y Y Y Y  pass   <- offline_exf_seaice.dyn_ellnnfr
+Y Y Y Y  pass   <- offline_exf_seaice.dyn_jfnk
+Y Y Y Y  pass   <- offline_exf_seaice.dyn_lsr
+Y Y Y Y  pass   <- offline_exf_seaice.dyn_mce
+Y Y Y Y  pass   <- offline_exf_seaice.dyn_paralens
+Y Y Y Y  pass   <- offline_exf_seaice.dyn_teardrop
+Y Y Y Y  pass   <- offline_exf_seaice.thermo
+Y Y Y Y  pass   <- offline_exf_seaice.thsice
+Y Y Y Y  pass   <- seaice_itd
+Y Y Y Y  pass   <- seaice_itd.lipscomb07
+Y Y Y Y  pass   <- seaice_itd.thermo
+Y Y Y Y  pass   <- seaice_obcs
+Y Y Y Y  pass   <- seaice_obcs.seaiceSponge
+Y Y Y Y  pass   <- seaice_obcs.tides
+Y Y Y Y  pass   <- shelfice_2d_remesh
+Y Y Y Y  pass   <- short_surf_wave
+Y Y Y Y  pass   <- so_box_biogeo
+Y Y Y Y  pass   <- so_box_biogeo.saphe
+Y Y Y Y  pass   <- solid-body.cs-32x32x1
+Y Y Y Y  pass   <- tutorial_advection_in_gyre
+Y Y Y Y  pass   <- tutorial_baroclinic_gyre
+Y Y Y Y  pass   <- tutorial_barotropic_gyre
+Y Y Y Y  pass   <- tutorial_cfc_offline
+Y Y Y Y  pass   <- tutorial_deep_convection
+Y Y Y Y  pass   <- tutorial_deep_convection.smag3d
+Y Y Y Y  pass   <- tutorial_global_oce_biogeo
+Y Y Y Y  pass   <- tutorial_global_oce_in_p
+Y Y Y Y  pass   <- tutorial_global_oce_latlon
+Y Y Y Y  pass   <- tutorial_held_suarez_cs
+Y Y Y Y  pass   <- tutorial_plume_on_slope
+Y Y Y Y  pass   <- tutorial_reentrant_channel
+Y Y Y Y  pass   <- tutorial_rotating_tank
+End time:    Wednesday, November 30, 2022 PM06:40:12 HKT

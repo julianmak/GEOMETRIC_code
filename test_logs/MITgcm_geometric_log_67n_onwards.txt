@@ -1,0 +1,379 @@
+Notes for fixing some things for GEOMETRIC in MITgcm
+
+-- checkpoint67n
+
+TODOs
+
+* ordering of tapering, min/max etc.
+* see if it even compiles (it should)
+  -- sample diagnostics / outputs
+* creating a diagnostic framework for LLC grid
+  -- probably start with globe_oce_laton
+  -- do use xGCM at some point (to make use of the topology aware metrics)
+* advection of energy on the LLC grid
+  -- probably do the 1 pixel of energy test
+* parallelisation
+  -- distinctly remember this one being ok on the periodic channel and sector,
+     probably want to redo it anyway
+           
+=== misc notes ===
+
+!! be careful of time-stamps!
+   -- when in doubt, clean compile
+
+%%%%%%%%%%%%  30 Nov 2022 %%%%%%%%%%%%%
+
+* forked and git pulled a MITgcm branch (checkpoint68l)
+  -- set upstream/master and created a "geometric" branch
+  -- doing tests on it (unmodified)
+     -- ./testreport -of ../../experiments/linux_amd64_gfortran_custom [option file pointing explicitly to custom netCDF4]
+     -- ./do_tst_2+2
+     -- do a clean
+     -- ./testreport -mpi -of ../../experiments/linux_amd64_mpi_custom [option file pointing explicitly to custom mpi]
+     -- ./do_tst_2+2 -mpi
+  !? some failed even on the unmodified branch, ignore for now    
+  -- add in code to "code/" first
+     -- prelim test with a separate experiment
+        -- check if it compiles at least
+           -- quite a lot of variable discrepancies, fix those manually
+        -- some compilation fails when the GEOM CPP flag is not switched on, so
+           readjust the header file variable placements accordingly
+           -- throwing up an error at "gmredi_check", substitute a variable
+              in the check
+              !? moved some thing around in the common block (don't really
+                 like the end result, may want to fix)
+              -- will run at least
+     -- global 4deg lat-lon seems ok (both mpi and serial version)
+        !? lower slope limiter, and/or advective form required?
+     -- cs32 (only the mpi with processes)
+        !? seem to need the advective form also??
+  -- add in to "pkg/gmredi"
+     ?? shouldn't break anything, since it is not used as the CPP flags are
+        not switched on in the tests
+     ?? ./testreport -of ../../experiments/linux_amd64_gfortran_custom [option file pointing explicitly to custom netCDF4]
+     ?? ./do_tst_2+2
+     -- do a clean
+     ?? ./testreport -mpi -of ../../experiments/linux_amd64_mpi_custom [option file pointing explicitly to custom mpi]
+     ?? ./do_tst_2+2 -mpi
+
+* moved things around a bit
+  -- created a "geometric_log" folder to dump things in
+  -- in preparation for pull request and various tests
+
+%%%%%%%%%%%%  24 Nov 2022 %%%%%%%%%%%%%
+
+!! there is a "rotate_uv2en.F" function in the ECCO code that is probably going
+   to be useful for calling to rotate a purely west-ward velocity onto the
+   CS/LLC grids, to check
+   
+!! the cubed sphere option is probably in "eedata", "useCubedSphereExchange=.TRUE."
+
+* try this with checkpoint66g...
+  -- standard v4r3, with ECCO, CTRL, PROFILES and SMOOTH switched off to speed
+     it up
+  -- just do a three month run
+     -- looks like it will run (rage...)
+     -- crashed when it got to diagnostic stage ("diags/" doesn't exist)
+        -- will now pass
+     
+  ?? threaded version with 24 cpu works?
+
+* even the LLC90 ECCO run seems to fail...
+  -- cg2d seems to be crashing and returning NaNs
+  -- folder doesn't exist and can't write in diagnostics (probably turn this off)
+
+* instead of stripping things back (removing ECCO things), maybe start from cs32 
+  and up it to LLC90 (which never had ECCO in in the first place)
+  -- copy the ECCO "SIZE.h" in
+  -- EXF is compiled but not used, so need the related files there
+     -- going to comment out "bulk_force"
+  -- where is the grid file?
+     -- it's "tile00?.mitgrid", but that's a default in "ini_curvilinear_grid.F"
+     -- copy the grid files into "run"
+     -- need "data.exch"
+  -- manually copy in the "data" file
+     -- only do swapping and necessary additions (since a load of things are not
+        compiled)
+     -- copy in the files needed by "data"
+     -- don't need the "hydrog" files since starting from pickup or from 
+        the manual, so empty those entries
+  -- copy in "data.exf" and link/copy files
+     -- the "eccov4r4_*" forcings are linked into the folder
+     -- runoff is climatology
+  -- switch off MNC and add in EXF in "data.pkg"
+  -- copy in the pickup at nIter0 = 1 and see if it runs
+     !! for testing purposes, use 4 threads and 24 cores and dump everything 
+        onto 1 node, instead of 96 cores and 3 nodes (easier to pass the queue)
+     -- mistyped a variable in data (extra "." in one of the variables)
+     -- "#undef ALLOW_3D_VISCA4" in MOM_COMMON_OPTIONS.h
+        -- recompile with "#define ALLOW_3D_VISCA4" [is "#def" an ok substitute?]
+     -- "pkg/cal" not switched on
+        -- add into "data.pkg" [not on explicitly in the other one?]
+        -- missing "data.cal", copy one in
+     -- need "#define ALLOW_3D_DIFFKR" and "#define ALLOW_GEOTHERMAL_FLUX"
+        -- add to "CPP_OPTION.h"
+     -- try " pickupStrictlyMatch=.FALSE.," in file: "data", NameList: "PARM03"
+        -- pickup missing some variables probably because of package discrepancies
+     -- crashed after 1 time step, "rStarFac[C,W,S]" too small
+        -- the ECCO "data" has the relevant "PARM01" lines commented, try that
+           -- no, rStar still going negative
+        -- try with "ggl90" (nothing so far)
+           -- copy in the "GGL90_OPTION.h", "#define ALLOW_GGL90_SMOOTH"
+           -- compile, copy in "data.ggl90"
+           -- "implicitViscosity=.TRUE.," in "data"
+           -- remove the strict restart check and see
+              -- "GtNm1" etc., missing, turn off strict maybe
+           -- copy in the "pickup_ggl90" if using restart
+     -- kind of annoying, just going to switch nonlinear free surface off...
+        -- runs!
+        -- but the cg2d stuff crashes after a few time steps...
+        -- try it with the restart
+           -- still crashing, cg2d convergence too lax?
+     -- turned on AB3 (recompile etc.)
+        -- starting from restart leads to cg2d non-convergence
+        -- starting from scratch seems to not crash for a bit, but then crashes
+           later
+        -- nonlinear free surface option with AB3
+           -- from scratch will run for a bit then rStarFac too small
+           -- pickup will die immediately
+        -- go back to linear...
+     -- turn down the time-step?
+        -- slightly better but not really
+     ?? probably want to crank up the diffusivity
+        -- turn off "diffKr" option and crank up the uniform diffusivities
+           
+        
+
+  
+%%%%%%%%%%%%  23 Nov 2022 %%%%%%%%%%%%%
+
+* attempt at setting up a LLC90 re-run
+  -- based on ECCOv4r4
+     -- should use checkpoint66g, but going to try it with 67n to see if it runs
+        in the forward (only need the forward)
+  -- soft link all the atmospheric forcing from "input_forcing"
+  -- soft link all the "input_ecco" stuff (even if not doing adjoint)
+  -- copy in the "input_init" but remove the "error_weight"
+  -- just doing usual "make depend" and "make" (not "make adall")
+  -- will run? but the reading is so slow...
+     -- consider switching off the following pkgs: ECCO, CTRL, PROFILES, AUTODIFF, SMOOTH(?)
+        -- switch off the offending packages (not interested in those here anyway)
+           -- still going into those read commands though?
+           -- switch it off anyway because PROFILES so slow...
+              (not waiting 30 mins just for it to tell me I am missing a file)
+     -- failed at a read field ("MDSREADFIELD retired")
+        -- this is in 67n but not 66g
+        -- this is in the ECCO, CTRL and COST package
+        -- add in "USE_OBSOLETE_MDS_RW_FIELD" to "MDSIO_OPTIONS.h"
+           -- will bypass that error
+  
+* attempt at setting up a LLC90
+  -- take it from https://github.com/MITgcm/verification_other/tree/master/global_oce_llc90
+  -- try to set it up by loads of things seem outdated, too much of a pain
+     (and looks like it's more or less a repeat of ECCO anyway), so just going
+     to use the ECCO calculation
+
+* remove the redundant GEOM2dK variable
+  -- don't really need it, just substitute it with "GEOMK(:,:,1,bi,bj)"
+  -- only shows up in "gmredi_calc_geom.F", no longer exists
+  -- runs seem ok in "cs32" and "global_lat_lon" (kgm signature ok by eye)
+
+%%%%%%%%%%%%  22 Nov 2022 %%%%%%%%%%%%%
+
+* switch the mean advection back on?
+  -- didn't crash (doesn't mean anything by itself of course)
+     -- Drake passage kgm seems a bit too small (~100), compared to the case 
+        with no advection
+        -- can reproduce this in the lat-lon model 
+           -- alp = 0.08, no adv, kgm larger (~20000)
+           -- alp = 0.06, with adv, kgm much smaller (~60)
+  -- have mean advection but crank up alp value (0.08)
+     -- larger values of kgm in Drake passage now (as well as in WBCs)
+     -- the resulting map looks reasonable (large in Drake passage, WBC, 
+        Agulas region)
+  -- trying the 1-pixel test
+     -- for CS32, chose
+        -- (10,5 ), good except for face 3 (which is then somewhere in Europe)
+        -- (5 ,25), good except for face 2 (somewhere on the Southern part of the Middle East)
+        -- (30,17) good except for face 1 (somewhere in the Middle East)
+     -- mean advection seems consistent in the eyeball norm (just looking at the
+        individual tiles and seeing where the energy goes) 
+        !? weird case with (10,1) where energy gets a sign flip and goes 
+           negative? doesn't seem to show up elsewhere weirdly enough; above
+           test results in positive energy with the (eyeball norm) periodicities
+           when going through the cubed-sphere faces
+
+* seems to be a bit weird around the Kerguelen plateau bit with very large
+  kgm values (when the Drake passage area is a little too low)
+  -- a patch of large kgm that seems to keep spreading
+  -- use advective form of GM instead?
+     -- much more stable, no crashing
+        ?? cs32 and others doesn't play well with skew-flux form because of
+           grid?
+           -- ECCOv4r3 and ASTE_R1 for example has advective form ON
+              (in NAMELIST/data.gmredi)
+           -- keep advective form on for now
+  -- with advective form larger alp values are stable
+     -- keep at 0.06 for the moment (Drake passage kgm around 7000)
+
+* tuning GEOM: kgm seems to be generically large in SO, turn down the alphas
+  etc. a bit
+  -- probably not surprising, since cs32 = 192 * 32 = 6144 dof per layer, while 
+     for global_lat_lon = 90 * 40 = 3600 dof per layer, so cs32 is nominally
+     higher resolution and probably doesn't need alp that large
+  -- alp = 0.08, 0.06 crashes (kgm seems too big)
+  -- alp = 0.04 at least doesn't crash, though kgm seems a little low
+  -- alp = 0.05 doesn't crash either
+  -- running from a restart?
+     -- GEOM pickup requires a restart
+        -- lessen that, throw up warning instead of error
+     -- slightly better, need longer than 10 years to see stability maybe
+     -- crashes just after 20 years
+     
+* related to threading issue, same problem does not show up if threads are
+  kept at 1 ("nSx=1"), but number of processes are increased instead ("nPx=6")
+  -- code still blowing up though
+  !! keep it at "nPx=6" for the moment (laptop doesn't like it)
+     !! leave the threading issue for now, see if stable one can result first
+
+%%%%%%%%%%%%  21 Nov 2022 %%%%%%%%%%%%%
+
+!! will probably need to put a clause in to switch off wave induced advection
+     of energy (option here is "usingCurvilinearGrid=.TRUE.")
+     
+* turn down number of threads to 6
+  -- can't set facets or something, probably just keep it at 12 threads (using
+     SingleCpuIO and no MNC anyway)
+  -- well can't set because forgot to change "sNy"
+     -- "sNy = 32" and "nSx = 6" (copied from Held-Suarez tutorial) will run
+        ?? 10 year run didn't crash????
+     -- "sNy = 32", "sNx = 192" and "nSx = 1" does not run (because expecting
+        splitting into 6 parts)
+        -- probably does mean the threading stuff needs fixing...
+     
+!! GEOM diag output seems completely screwed up, need to investigate...
+   -- probably faster to switch on MNC for looking at tiles
+   -- looks like the problem is with how the 2d "GEOMkap0" is defined, since
+      the 3d version is ok
+      ?? the former is defined without reference to tile indices "b[ij]", so
+         may want to do something there
+
+* attempt a clean compile with the GEOMETRIC code as is  
+  -- some floating 1-pixel test remnants to remove and recompile
+  -- code will run (because GEOMETRIC not switched on in "data.gmredi")
+  -- switch off the Visbeck stuff
+     ?? switching skew-flux form on
+     -- switch off some defunct diagnostics
+     -- added GEOM diagnostics (DIAGNOSTICS_SIZE already big enough it seems)
+  -- GEOMETRIC kills the run because curvilinear grid option not currently 
+     supported
+     !! turn this into a warning, noting it will probably break
+     -- crashed because temperature going out of bounds
+     -- moved the warning into the metric definition bit so it only outputs
+        once
+     -- set "c_ros(i,j) = 0" for non-Cartesian and non-Spherical grids for now
+  -- energy seems to blow up
+     -- switch off all advection options (mean and wave)
+        -- still blew up but much later
+
+* do a longer run to see outputs
+  -- timestep of a day, so do 3600 (10 years)
+
+%%%%%%%%%%%%  17 Nov 2022 %%%%%%%%%%%%%
+
+?? starting to create a diagnostic framework to get these things working
+
+* compiling cs32 with the bare minimum
+  -- no adjoint, no atmos, no ice
+  -- will run
+
+* at Martin's suggestion, test out code in cs32
+  -- need to set the run going first, and set up diagnostic framework to do
+     analysis with
+     -- COMPILED but not used (! e.g. "results/output.txt")
+  -- "grid_cs32*.bin" files in "verfication/tutorial_held_suarez", copy those in
+  -- a few convenient (?) modifications
+     -- uncomment "usesingleCpuIO" (off in the default)
+        -- spits out global "*.data" files of size (192 = 32*6, 32), to be
+           reshaped
+     -- start at time step 0 (default starts at something with provided pickup 
+        file, but that gets killed with "rm -v *.{meta,data}" during clean up...
+        just me being lazy here)
+
+%%%%%%%%%%%%  16 Nov 2022 %%%%%%%%%%%%%
+
+* some testing on the lat-lon grid with the 1-pixel energy test
+  -- put a few blobs in the Pacific
+  -- for mean advection only, mostly going East and in line with the mean
+     flow advection expected in the Pacific
+  -- for wave advection only, energy only gets moved West, it being (fairly!)
+     fast in the tropical region, as expected
+  !! added notes for use later in the LLC grid
+
+* 10 and 100 year to see effects
+  -- rather large coastal values when no tapering
+  -- kills off large k_gm values near coast, so doing it ok
+     !! this is with "depth_taper ** 2", if only a single power, then the
+        distribution looks ok (at least for this 4deg model), with mildly
+        larger values in the Arctic region maybe
+
+* GEOM code limiters and tapering
+  -- based on what Yongqi did, but be in line with NEMO modifications
+  -- ordering is (what NEMO does but now what Yongqi actually did):
+       1. compute 2d k_GEOM
+       2. cap 2d k_GEOM from above
+       3. depth and lat taper if need be
+       4. extend to 3d via vertical structure function (or just 1s if uniform)
+       5. cap 3d k_GEOM from below
+  -- output "depthC" and introduced "depth_taper" as aux variables
+     -- added diagnostics, warning about it not being filled?
+        -- missed out some spaces (default of 8 chars even if blank)
+        -- "depthC" is what it should be (0 to ~5000m depth)
+        ?? "depth_taper" is roughly ok, probably could square it to make it
+           taper harder (since 0 =< depth_taper =< 1)
+           !! NEMO uses both a depth and a Rossby number based one once each,
+              so doing depth taper twice is one possibility to mimic that
+              (not great but might be enough)
+
+%%%%%%%%%%%%  25 Oct 2022 %%%%%%%%%%%%%
+
+* copy in the existing GEOM code
+  -- "gmredi*", "GMREDI*", "CPP_OPTIONS.h"
+     -- CLEAN compile (from "genmake" step to deal with time-stamps...?),
+     !! warning of "Ignores diffKrT (or Kp,Kz) setting in file "data" with ALLOW_3D_DIFFKR"
+        but since "diffkr.bin" is not specified I assume it's fine...?
+        (could just switch it off)
+  -- will run and spit out the on-the-fly diags (time etc.)
+     -- "grep -ri GMREDI_CALC_GEOM"
+     !! warning of "IEEE_INVALID_FLAG IEEE_DIVIDE_BY_ZERO", probably can ignore
+        (most likely in the energy budget calculation bits)
+  -- switch on the diagnostics
+     !! kgm large near coast, expected since not depth tapered yet
+     -- growth and advection patterns largely expected (large in SO, advection to be modified)
+  -- 10 year run outputs with an untuned GEOM seems to behave as expected
+     with known things to tidy up
+     !? for the 4deg calculation "alp = 0.04" (at lmbda-1 = 100 days') seems a bit too small 
+        even if resulting patterns looks ok, crank up "alp" for this model
+        ("alp = 0.08" or thereabouts seem ok, several thousand in the Drake passage, a
+         thousand or so in the WBCs; can refine)
+
+* reminding myself what is going on with MITgcm (checkpoint 67n), been a while
+  using MITgcm
+  -- copied "globe_oce_latlon" into another folder, loaded the relevant
+     libraries and have option files, built and compile
+     -- runs as expected, but in different tiles in netCDF output (for quick
+        dirty checks)
+        -- changed it for now so one CPU does everything (was two threads)
+        -- runs for a year (was 20 days I guess, dt_tracer = 1 day)
+  -- recompile with diagnostics package (clean make of "genmake", 
+     lines in "packages.conf" and "data.pkg")
+     -- crashes as expected because not provided "data.diagnostics"
+        -- just copy one in from Dave Munday's setup (switch off ones that don't
+           exist yet; output every 10 days for now)
+        -- not enough space for diagnostics, copy in a "DIAGNOSTICS_SIZE.h"
+           -- edited in "code/" but not updated in "build/"?
+              -- fucking timestamps!!! trivial edit then "make CLEAN", 
+                 "make depend" to check
+     -- will not crash and will spit out stuff
+  -- turned off "dump/tavefreq" (so mnc manages everything) and turned up
+     "monitorFreq" to speed it up a little bit

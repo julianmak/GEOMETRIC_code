@@ -131,7 +131,7 @@ CONTAINS
       REAL(wp) ::   zck, zwslpi, zwslpj !   -      -  tapering near coasts
       REAL(wp) ::   zc_rosu             !   -      -
       REAL(wp), DIMENSION(jpi,jpj)     ::   zeke_peS, zn_slp                 ! 2D workspace, PE-KE conversion
-      REAL(wp), DIMENSION(jpi,jpj)     ::   zadv_ubt, zwx, zwy               !  -     -      barotropic advection
+      REAL(wp), DIMENSION(jpi,jpj)     ::   zadv_ubt, zwx, zwy, zeke_ht      !  -     -      barotropic advection
       REAL(wp), DIMENSION(jpi,jpj)     ::   zlap, zaheeu, zaheev, ztu, ztv   !  -     -      diffusion
       REAL(wp), DIMENSION(jpi,jpj)     ::   zdis                             !  -     -      linear dissipation
       REAL(wp), DIMENSION(jpi,jpj)     ::   zn, zross                        !  -     -      tapering near coasts
@@ -206,6 +206,14 @@ CONTAINS
 
       !                    !*  upstream advection with initial mass fluxes & intermediate update
       !                          !* upstream tracer flux in the i and j direction
+      !
+! JM: should probably use "ht_b" etc., but "ht_b" doesn't exist ("h[uv]_b" does though)...
+! JM: un_adv is the depth-INTEGRATED velocity? GEOMETRIC uses depth-averaged
+      !
+      zadv_ubt(:,:) = 0._wp
+      !
+      zeke_ht(:,:) = eke_b(:,:) / MAX( ht_0(:,:), 1._wp) * tmask(:,:,1)
+      !
       DO jj = 1, jpjm1
          DO ji = 1, fs_jpim1   ! vector opt.
             ! upstream scheme
@@ -213,8 +221,8 @@ CONTAINS
             zfm_ui = un_adv(ji,jj) - ABS( un_adv(ji,jj) )
             zfp_vj = vn_adv(ji,jj) + ABS( vn_adv(ji,jj) )
             zfm_vj = vn_adv(ji,jj) - ABS( vn_adv(ji,jj) )
-            zwx(ji,jj) = 0.5 * ( zfp_ui * eke_b(ji,jj) + zfm_ui * eke_b(ji+1,jj  ) )
-            zwy(ji,jj) = 0.5 * ( zfp_vj * eke_b(ji,jj) + zfm_vj * eke_b(ji  ,jj+1) )
+            zwx(ji,jj) = 0.5 * e2u(ji,jj) * hu_0(ji,jj) * ( zfp_ui * eke_b(ji,jj) + zfm_ui * eke_b(ji+1,jj  ) )
+            zwy(ji,jj) = 0.5 * e1v(ji,jj) * hv_0(ji,jj) * ( zfp_vj * eke_b(ji,jj) + zfm_vj * eke_b(ji  ,jj+1) )
          END DO
       END DO
       !                           !* divergence of ubt advective fluxes
@@ -224,13 +232,13 @@ CONTAINS
                &                 + zwy(ji,jj) - zwy(ji  ,jj-1) ) * r1_e1e2t(ji,jj)
          END DO
       END DO
-      IF( ln_linssh ) THEN                !* top value   (linear free surf. only as zwz is multiplied by wmask)
-         DO jj = 2, jpjm1
-            DO ji = fs_2, fs_jpim1   ! vector opt.
-               zadv_ubt(ji,jj) = - wn(ji,jj,1) * eke_b(ji,jj) / ( ht_0(ji,jj) + 1._wp-tmask(ji,jj,1) )   ! jm (03 Mar 18): was eke_n
-            END DO
-         END DO
-      ENDIF
+!      IF( ln_linssh ) THEN                !* top value   (linear free surf. only as zwz is multiplied by wmask)
+!         DO jj = 2, jpjm1
+!            DO ji = fs_2, fs_jpim1   ! vector opt.
+!               zadv_ubt(ji,jj) = - wn(ji,jj,1) * eke_b(ji,jj) / ( ht_0(ji,jj) + 1._wp-tmask(ji,jj,1) )   ! jm (03 Mar 18): was eke_n
+!            END DO
+!         END DO
+!      ENDIF
       !
       !                          !* same as above but for advection by Rossby waves
       zadv_wav(:,:) = 0._wp
@@ -323,13 +331,13 @@ CONTAINS
             CASE(   0  )  !  default: just PE->EKE growth and linear dissipation
                zeke_rhs =                                       zeke_peS(ji,jj) + zdis(ji,jj) + zlap(ji,jj)
             CASE(   1  )  !  as default but with full advection
-               zeke_rhs = - zadv_ubt(ji,jj) + zadv_wav(ji,jj) + zeke_peS(ji,jj) + zdis(ji,jj) + zlap(ji,jj)
+               zeke_rhs = zadv_ubt(ji,jj) + zadv_wav(ji,jj) + zeke_peS(ji,jj) + zdis(ji,jj) + zlap(ji,jj)
             CASE(   2  )  !  full thing with additional KE->EKE growth 
-               zeke_rhs = - zadv_ubt(ji,jj) + zadv_wav(ji,jj) + zeke_peS(ji,jj) + zdis(ji,jj) + zlap(ji,jj) + eke_keS(ji,jj)
+               zeke_rhs = zadv_ubt(ji,jj) + zadv_wav(ji,jj) + zeke_peS(ji,jj) + zdis(ji,jj) + zlap(ji,jj) + eke_keS(ji,jj)
             CASE(  88  )  !  ONLY advection by mean flow
-               zeke_rhs = - zadv_ubt(ji,jj)
+               zeke_rhs = zadv_ubt(ji,jj)
             CASE(  99  )  !  ONLY diffusion
-               zeke_rhs =   zlap(ji,jj)
+               zeke_rhs = zlap(ji,jj)
             CASE DEFAULT
                CALL ctl_stop('ldf_eke: wrong choice nn_eke_opt, set at least to 0 (default)')
             END SELECT
